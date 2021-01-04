@@ -5,6 +5,7 @@ Firebase Authentication を使ったサーバを実装するときにフロン�
 # How to use
 
 ```shell
+$ export GOOGLE_APPLICATION_CREDENTIALS=path/to/service-account.json
 $ export FTC_APIKEY=xxx
 $ curl -H "Authorization:Bearer $(ftc)" localhost:8080
 ```
@@ -12,6 +13,7 @@ $ curl -H "Authorization:Bearer $(ftc)" localhost:8080
 or
 
 ```shell
+$ export GOOGLE_APPLICATION_CREDENTIALS=path/to/service-account.json
 $ curl -H "Authorization:Bearer $(ftc --apikey xxx)" localhost:8080
 ```
 
