@@ -29,16 +29,19 @@ var client *auth.Client
 
 func main() {
 	ctx := context.Background()
-	uid := *flag.String("uid", "uid", "レスポンスの jwt の uid")
-	apikey := os.Getenv("FTC_APIKEY")
-	if apikey == "" {
-		apikey = *flag.String("apikey", "", "認証に使う firebase プロジェクトの apikey")
-	}
+	var (
+		uid = flag.String("uid", "uid", "レスポンスの jwt の uid")
+		apikey = flag.String("apikey", "", "認証に使う firebase プロジェクトの apikey")
+	)
 	flag.Parse()
+	if *apikey == "" {
+		_apikey := os.Getenv("FTC_APIKEY")
+		apikey = &_apikey
+	}
 
-	if apikey == "" {
+	if *apikey == "" {
 		msg :=
-`apiKey が見つかりません。
+			`apiKey が見つかりません。
 環境変数 FTC_APIKEY をセットするか、引数で渡してください。
 詳しくは https://firebase.google.com/docs/reference/rest/auth/ を参照してください。`
 		fmt.Println(msg)
@@ -73,8 +76,8 @@ func initClient(ctx context.Context) {
 }
 
 // firebase からカスタムトークンを取得
-func getCustomToken(ctx context.Context, uid string) string {
-	token, err := client.CustomToken(ctx, uid)
+func getCustomToken(ctx context.Context, uid *string) string {
+	token, err := client.CustomToken(ctx, *uid)
 	if err != nil {
 		panic(err)
 	}
@@ -83,8 +86,8 @@ func getCustomToken(ctx context.Context, uid string) string {
 }
 
 // firebase からアクセストークンを取得
-func getToken(apikey string, token string) *FirebaseTokenResponse {
-	url := fmt.Sprintf("https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=%v", apikey)
+func getToken(apikey *string, token string) *FirebaseTokenResponse {
+	url := fmt.Sprintf("https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=%v", *apikey)
 	requestBody, err := json.Marshal(FirebaseTokenRequest{Token: token, ReturnSecureToken: true})
 	if err != nil {
 		panic(err)
@@ -98,6 +101,9 @@ func getToken(apikey string, token string) *FirebaseTokenResponse {
 	b, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		panic(err)
+	}
+	if response.StatusCode >= 400 {
+		panic(fmt.Errorf(string(b)))
 	}
 
 	ft := FirebaseTokenResponse{}
