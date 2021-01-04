@@ -14,3 +14,12 @@ or
 ```shell
 $ curl -H "Authorization:Bearer $(ftc --apikey xxx)" localhost:8080
 ```
+
+# How to install
+
+## Homebrew
+
+```shell
+$ brew tap KoutaMatsushita/ftc
+$ brew install ftc
+```
