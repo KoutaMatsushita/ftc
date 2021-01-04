@@ -4,6 +4,8 @@ Firebase Authentication を使ったサーバを実装するときにフロン�
 
 # How to use
 
+`GOOGLE_APPLICATION_CREDENTIALS` については https://firebase.google.com/docs/admin/setup?hl=ja#initialize-sdk を参照。
+
 ```shell
 $ export GOOGLE_APPLICATION_CREDENTIALS=path/to/service-account.json
 $ export FTC_APIKEY=xxx
